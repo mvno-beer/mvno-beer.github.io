@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- vector take on the MVNO BEER app logo: phone + bottle breaking out of the frame -->
+  <defs>
+    <clipPath id="screen"><rect x="160" y="70" width="192" height="372" rx="26"/></clipPath>
+    <linearGradient id="beer" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#D9780A"/>
+      <stop offset=".5" stop-color="#FFC531"/>
+      <stop offset="1" stop-color="#C66A05"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#C9D3D9" stop-opacity=".55"/>
+      <stop offset=".5" stop-color="#FFFFFF" stop-opacity=".25"/>
+      <stop offset="1" stop-color="#9BA6AD" stop-opacity=".6"/>
+    </linearGradient>
+    <path id="bottle" d="M-22 -150 L-22 -80 C-22 -50 -52 -40 -52 0 L-52 220 L52 220 L52 0 C52 -40 22 -50 22 -80 L22 -150 Z"/>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#283136"/>
+  <!-- phone -->
+  <rect x="148" y="58" width="216" height="396" rx="38" fill="#0E1113" stroke="#9AA3A9" stroke-width="5"/>
+  <rect x="160" y="70" width="192" height="372" rx="26" fill="#283136"/>
+  <rect x="206" y="70" width="100" height="18" rx="9" fill="#0E1113"/>
+  <!-- bottle inside the screen -->
+  <g clip-path="url(#screen)">
+    <g transform="translate(262 300) rotate(26)">
+      <use href="#bottle" fill="url(#beer)"/>
+      <path d="M-52 40 C-30 26 -10 34 0 26 C14 18 34 30 52 22 L52 52 C30 60 10 50 -4 56 C-20 62 -36 52 -52 58 Z" fill="#FFF8E7"/>
+      <rect x="-40" y="70" width="10" height="140" rx="5" fill="#fff" fill-opacity=".35"/>
+    </g>
+  </g>
+  <!-- neck breaking out of the frame -->
+  <g transform="translate(262 300) rotate(26)">
+    <path d="M-22 -150 L-22 -80 C-22 -50 -52 -40 -52 0 L52 0 C52 -40 22 -50 22 -80 L22 -150 Z" fill="url(#glass)" stroke="#E6ECEF" stroke-opacity=".6" stroke-width="2"/>
+    <path d="M-22 -96 C-10 -104 6 -92 22 -100 L22 -84 C8 -78 -8 -88 -22 -82 Z" fill="#FFF8E7"/>
+    <path d="M-22 -84 L22 -84 L22 -80 C22 -50 52 -40 52 0 L-52 0 C-52 -40 -22 -50 -22 -80 Z" fill="url(#beer)" fill-opacity=".9"/>
+    <rect x="-30" y="-176" width="60" height="28" rx="6" fill="#C7CED3" stroke="#6E777D" stroke-width="2"/>
+  </g>
+</svg>
