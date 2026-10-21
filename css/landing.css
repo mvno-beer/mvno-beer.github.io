@@ -1,0 +1,334 @@
+:root {
+  --bg: #FFFDF8;
+  --ink: #2A3136;
+  --ink-beer: #3B1F00;
+  --beer-top: #FFCB45;
+  --beer-mid: #F5B228;
+  --beer-bottom: #E07B00;
+  --foam: #FFF8E7;
+  --foam-shade: #F1DFB6;
+
+  /* timing (keep in sync with js/landing.js) */
+  --t-pop: .55s;
+  --t-fly: 1.1s;
+  --t-fill: 2.2s;
+
+  /* beer level in scene 4: 20% of the screen left empty on top */
+  --beer-level: 80%;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Pretendard, "Noto Sans KR", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+body { overflow: hidden; }
+
+img { user-select: none; -webkit-user-drag: none; }
+
+/* ---------- header ---------- */
+.site-header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  padding: clamp(16px, 3vw, 40px) clamp(16px, 5vw, 80px);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 800;
+  font-size: clamp(18px, 1.6vw, 24px);
+  letter-spacing: .04em;
+}
+
+.brand img {
+  width: clamp(36px, 3vw, 48px);
+  height: auto;
+  border-radius: 22%;
+}
+
+/* ---------- stage ---------- */
+.stage {
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+}
+
+/*
+ * .art is a fixed-ratio canvas (1600x1000 units on PC, 900x1600 on mobile)
+ * scaled to cover the viewport, so the bottle and opener keep their relation.
+ * Rig positions are given in canvas units via --x / --y / --h.
+ */
+.art {
+  --cw: 1600;
+  --ch: 1000;
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: max(100vw, 160vh);
+  aspect-ratio: 1600 / 1000;
+  transform: translateX(-50%);
+}
+
+.fly {
+  position: absolute;
+  inset: 0;
+  transition: transform var(--t-fly) cubic-bezier(.55, 0, .75, .2);
+}
+
+.rig {
+  position: absolute;
+  left: calc(var(--x) / var(--cw) * 100%);
+  top: calc(var(--y) / var(--ch) * 100%);
+  height: calc(var(--h) / var(--ch) * 100%);
+  transform: translate(-50%, -50%) rotate(var(--r));
+  transition: transform var(--t-pop) cubic-bezier(.2, 1.4, .4, 1);
+}
+
+.rig img { display: block; height: 100%; width: auto; }
+
+.rig--bottle { --x: 560; --y: 640; --h: 1050; --r: 24deg; aspect-ratio: 200 / 600; }
+.rig--opener { --x: 1040; --y: 470; --h: 1000; --r: -40deg; aspect-ratio: 200 / 520; }
+
+/* scene 1: opener nudges the cap */
+.stage[data-scene="1"] .rig--opener { animation: nudge 1.1s ease-in-out both; }
+
+@keyframes nudge {
+  0%   { transform: translate(-50%, -50%) translate(6%, 3%) rotate(var(--r)); }
+  70%  { transform: translate(-50%, -50%) rotate(calc(var(--r) - 4deg)); }
+  100% { transform: translate(-50%, -50%) rotate(var(--r)); }
+}
+
+/* cap: in bottle-local coords (x70-130, y28-58 of 200x600) */
+.rig .cap {
+  position: absolute;
+  left: 35%;
+  top: 4.6%;
+  width: 30%;
+  height: auto;
+  transition: transform .9s cubic-bezier(.15, .7, .3, 1), opacity .4s .6s;
+}
+
+/* foam burst svg, origin at bottle neck */
+.burst {
+  position: absolute;
+  left: 0;
+  top: -21.7%;
+  width: 100%;
+  height: 33.3%;
+  pointer-events: none;
+}
+
+.burst__head, .burst__drips, .burst__drops { fill: var(--foam); stroke: var(--foam-shade); stroke-width: 2; }
+.burst__head { transform-origin: 100px 160px; transform: scale(0); }
+.burst__drips { transform-origin: 100px 150px; transform: scaleY(0); }
+.burst__drops circle { opacity: 0; }
+
+/* scene 2: pop! */
+.stage[data-scene="2"] .rig--opener,
+.stage[data-scene="3"] .rig--opener,
+.stage[data-scene="4"] .rig--opener {
+  transform: translate(-50%, -50%) translate(14%, -6%) rotate(calc(var(--r) + 28deg));
+}
+
+.stage:is([data-scene="2"], [data-scene="3"], [data-scene="4"]) .cap {
+  transform: translate(160%, -900%) rotate(560deg);
+  opacity: 0;
+}
+
+.stage:is([data-scene="2"], [data-scene="3"], [data-scene="4"]) .burst__head { animation: burst .7s cubic-bezier(.2, 1.6, .4, 1) forwards; }
+.stage:is([data-scene="2"], [data-scene="3"], [data-scene="4"]) .burst__drips { animation: drip 1.2s .25s ease-out forwards; }
+.stage:is([data-scene="2"], [data-scene="3"], [data-scene="4"]) .burst__drops circle { animation: drop .8s ease-out forwards; }
+
+@keyframes burst { to { transform: scale(1); } }
+@keyframes drip { to { transform: scaleY(1); } }
+@keyframes drop {
+  0%   { opacity: 1; transform: translate(0, 0); }
+  100% { opacity: 0; transform: translate(var(--dx), var(--dy)); }
+}
+
+/* scene 3: bottle & opener leave upward */
+.stage[data-scene="3"] .fly,
+.stage[data-scene="4"] .fly { transform: translateY(-140vh); }
+.stage[data-scene="3"] .fly--opener,
+.stage[data-scene="4"] .fly--opener { transition-delay: .08s; }
+
+/* ---------- beer ---------- */
+.beer {
+  position: absolute;
+  overflow: visible;
+  inset: auto 0 0;
+  height: 0;
+  z-index: 2;
+  background: linear-gradient(180deg, var(--beer-top), var(--beer-mid) 35%, var(--beer-bottom));
+  transition: height var(--t-fill) cubic-bezier(.3, .6, .25, 1);
+}
+
+/* light streaks (scene 4 sketch diagonals) */
+.beer::before {
+  content: "";
+  position: absolute;
+  inset: 0 -400px;
+  background: repeating-linear-gradient(120deg,
+    transparent 0 140px,
+    rgba(255, 255, 255, .13) 140px 175px,
+    transparent 175px 260px,
+    rgba(255, 255, 255, .07) 260px 280px);
+  animation: streak 8s linear infinite;
+}
+
+/* one gradient period measured along x: 280px / sin(120deg) */
+@keyframes streak { to { transform: translateX(323.3px); } }
+
+.stage[data-scene="3"] .beer,
+.stage[data-scene="4"] .beer { height: var(--beer-level); }
+
+.beer__head {
+  position: absolute;
+  inset: 0 0 auto;
+  height: clamp(48px, 9vh, 110px);
+  transform: translateY(-38%);
+  background: linear-gradient(180deg, var(--foam) 55%, rgba(255, 248, 231, 0));
+  z-index: 1;
+  opacity: 0;
+  transition: opacity .3s;
+}
+
+.stage:is([data-scene="3"], [data-scene="4"]) .beer__head { opacity: 1; }
+
+.beer__wave {
+  position: absolute;
+  inset: auto 0 auto 0;
+  bottom: 100%;
+  height: clamp(22px, 3.4vh, 40px);
+  margin-bottom: -2px;
+  background: url("../assets/foam-wave.svg") repeat-x 0 100% / auto 100%;
+}
+
+.beer__wave--back { opacity: .7; filter: brightness(.96); transform: translateY(-30%); animation: wave 9s linear infinite reverse; }
+.beer__wave--front { animation: wave 6s linear infinite; }
+
+@keyframes wave { to { background-position-x: 400px; } }
+
+.beer__bubbles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.bubble {
+  position: absolute;
+  bottom: -20px;
+  width: var(--s);
+  height: var(--s);
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 30%, #fff 0 18%, rgba(255, 246, 214, .55) 40%, rgba(255, 246, 214, .15) 70%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .45);
+  animation: rise var(--d) linear var(--delay) infinite, wobble 1.6s ease-in-out infinite alternate;
+}
+
+@keyframes rise {
+  0%   { bottom: -20px; opacity: 0; }
+  10%  { opacity: .9; }
+  92%  { opacity: .9; }
+  100% { bottom: calc(100% - 20px); opacity: 0; }
+}
+
+@keyframes wobble { to { transform: translateX(var(--w)); } }
+
+/* ---------- copy ---------- */
+.hero-copy {
+  position: absolute;
+  z-index: 3;
+  left: clamp(16px, 8vw, 160px);
+  right: clamp(16px, 8vw, 160px);
+  top: calc(100% - var(--beer-level) + clamp(80px, 14vh, 180px));
+  color: var(--ink-beer);
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .8s, transform .8s cubic-bezier(.2, .8, .2, 1);
+  pointer-events: none;
+}
+
+.stage[data-scene="4"] .hero-copy { opacity: 1; transform: none; pointer-events: auto; }
+
+.hero-copy__eyebrow {
+  margin: 0 0 16px;
+  font-weight: 700;
+  font-size: clamp(14px, 1.2vw, 18px);
+  letter-spacing: .2em;
+}
+
+.hero-copy__title {
+  margin: 0;
+  font-weight: 900;
+  font-size: clamp(40px, 6.2vw, 104px);
+  line-height: 1.08;
+  letter-spacing: -.03em;
+}
+
+.hero-copy__desc {
+  margin: 24px 0 0;
+  font-weight: 500;
+  font-size: clamp(16px, 1.5vw, 22px);
+}
+
+.replay {
+  position: absolute;
+  z-index: 4;
+  right: clamp(16px, 5vw, 80px);
+  bottom: clamp(16px, 5vh, 56px);
+  padding: 12px 20px;
+  border: 2px solid var(--ink-beer);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-beer);
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1;
+  font-family: inherit;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .5s .4s, background .2s, color .2s;
+}
+
+.replay:hover, .replay:focus-visible { background: var(--ink-beer); color: var(--beer-top); }
+.stage[data-scene="4"] .replay { opacity: 1; visibility: visible; }
+
+/* ---------- mobile (portrait) ---------- */
+@media (max-aspect-ratio: 1/1) {
+  .art {
+    --cw: 900;
+    --ch: 1600;
+    width: max(100vw, 56.25vh);
+    aspect-ratio: 900 / 1600;
+  }
+
+  .rig--bottle { --x: 360; --y: 1040; --h: 1150; --r: 20deg; }
+  .rig--opener { --x: 760; --y: 820; --h: 820; --r: -38deg; }
+
+  .hero-copy { top: calc(100% - var(--beer-level) + clamp(56px, 10vh, 120px)); }
+  .replay { left: 16px; right: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* replay: snap back to scene 1 without reverse transitions */
+.stage.is-resetting *,
+.stage.is-resetting *::before { transition: none !important; animation: none !important; }

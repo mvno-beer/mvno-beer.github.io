@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>MVNO BEER</title>
+  <meta name="description" content="뻥 뚫리는 알뜰폰, MVNO BEER">
+  <meta name="theme-color" content="#F5B228">
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <link rel="stylesheet" href="css/landing.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./">
+      <img src="assets/logo-512.png" alt="" width="44" height="44">
+      <span>MVNO BEER</span>
+    </a>
+  </header>
+
+  <main class="stage" id="stage" data-scene="1" aria-label="MVNO BEER 인트로">
+    <!-- scene 1~3: bottle + opener -->
+    <div class="art">
+      <div class="fly fly--bottle">
+        <div class="rig rig--bottle">
+          <img class="bottle" src="assets/bottle.svg" alt="" draggable="false">
+          <img class="cap" src="assets/cap.svg" alt="" draggable="false">
+          <svg class="burst" viewBox="0 0 200 200" aria-hidden="true">
+            <g class="burst__head">
+              <ellipse cx="100" cy="150" rx="40" ry="22"/>
+              <circle cx="72" cy="132" r="22"/>
+              <circle cx="104" cy="118" r="28"/>
+              <circle cx="132" cy="134" r="20"/>
+              <circle cx="88" cy="96" r="16"/>
+              <circle cx="120" cy="90" r="13"/>
+            </g>
+            <g class="burst__drips">
+              <rect x="66" y="150" width="14" height="60" rx="7"/>
+              <rect x="122" y="150" width="12" height="80" rx="6"/>
+            </g>
+            <g class="burst__drops">
+              <circle cx="100" cy="110" r="7" style="--dx:-70px;--dy:-60px"/>
+              <circle cx="100" cy="110" r="5" style="--dx:-40px;--dy:-100px"/>
+              <circle cx="100" cy="110" r="6" style="--dx:30px;--dy:-110px"/>
+              <circle cx="100" cy="110" r="4" style="--dx:70px;--dy:-70px"/>
+              <circle cx="100" cy="110" r="5" style="--dx:-90px;--dy:-10px"/>
+              <circle cx="100" cy="110" r="4" style="--dx:90px;--dy:-20px"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+      <div class="fly fly--opener">
+        <div class="rig rig--opener">
+          <img class="opener" src="assets/opener.svg" alt="" draggable="false">
+        </div>
+      </div>
+    </div>
+
+    <!-- scene 3~4: beer fills the screen -->
+    <div class="beer" aria-hidden="true">
+      <div class="beer__head">
+        <div class="beer__wave beer__wave--back"></div>
+        <div class="beer__wave beer__wave--front"></div>
+      </div>
+      <div class="beer__bubbles"></div>
+    </div>
+
+    <section class="hero-copy">
+      <p class="hero-copy__eyebrow">알뜰폰 요금제</p>
+      <h1 class="hero-copy__title">요금은 가볍게,<br>속은 뻥 뚫리게.</h1>
+      <p class="hero-copy__desc">MVNO BEER가 시원하게 따 드립니다.</p>
+    </section>
+
+    <button class="replay" type="button" aria-label="애니메이션 다시 보기">↻ 다시 따기</button>
+  </main>
+
+  <script src="js/landing.js"></script>
+</body>
+</html>
